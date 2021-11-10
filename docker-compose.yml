@@ -1,0 +1,14 @@
+
+version: '3'
+
+services:
+    postgres:
+        image: postgres:latest
+        ports:
+        - 5432:5432
+        environment:
+            POSTGRES_DB: 'izanami'
+            POSTGRES_USER: 'root'
+            POSTGRES_PASSWORD: 'root'
+
+        container_name: izanami_db

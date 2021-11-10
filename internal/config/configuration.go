@@ -4,17 +4,39 @@ import (
 	"github.com/spf13/viper"
 )
 
-func setDefaults() {
-	viper.SetDefault("Host", "0.0.0.0")
-	viper.SetDefault("Port", 5012)
+type configuration struct {
+	Enviromnent string
 
-	viper.SetDefault("Database.Driver", "mysql")
-	viper.SetDefault("Database.Host", "root:secret@/mercadobitcoin")
+	Database struct {
+		Host    string
+		Dbname  string
+		User    string
+		Passw   string
+		Disable string
+	}
+	Server struct {
+		Httport string
+	}
+}
+
+var Configuration configuration
+
+func setDefaults() {
+	viper.SetDefault("Server.Httport", 5012)
+
+	viper.SetDefault("Database.Host", "127.0.0.1")
+	viper.SetDefault("Database.Dbname", "izanami")
+	viper.SetDefault("Database.User", "root")
+	viper.SetDefault("Database.Passw", "root")
+	viper.SetDefault("Database.Disable", "disable")
+
+	viper.SetDefault("Enviromnent", "Dev")
 
 }
 
 func InitConfig() {
 	setDefaults()
+	viper.AutomaticEnv()
 
 	viper.BindEnv("Enviromnent", "ENV_NAME")
 	viper.BindEnv("Host", "HOST")

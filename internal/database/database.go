@@ -17,11 +17,11 @@ type Database struct {
 func Connect() *sql.DB {
 
 	db := Database{
-		Host: "",
-		dbname: "",
-		user: "",
-		passw: "",
-		disable: "",
+		Host: "127.0.0.1",
+		dbname: "izanami",
+		user: "root",
+		passw: "root",
+		disable: "disable",
 	}
 
 	connection := fmt.Sprintf("user=%s dbname=%s password=%s host=%s sslmode=%s", db.user, db.dbname, db.passw,

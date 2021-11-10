@@ -3,12 +3,27 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/mthsrocha/mb/main"
 )
 
 func Handlers() {
-	http.HandleFunc("/list", main.GetAllList)
-	http.HandleFunc("/insert", main.GetAllList)
-	http.HandleFunc("/remove", main.GetAllList)
-	http.HandleFunc("/done", main.GetAllList)
+	http.HandleFunc("/list/", getAllList)
+	http.HandleFunc("/insert/", insertItem)
+	http.HandleFunc("/remove/", removeItem)
+	http.HandleFunc("/done/", updateItem)
+}
+
+func getAllList(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func insertItem(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func removeItem(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func updateItem(w http.ResponseWriter, r *http.Request) {
+
 }
