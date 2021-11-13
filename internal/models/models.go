@@ -20,6 +20,7 @@ type Item struct {
 
 func (l *List) GetAllItens() (*List, error) {
 	db := database.Connect()
+	defer db.Close()
 
 	select_sql := "SELECT * FROM to_do_list WHERE ListId=$1"
 
@@ -47,13 +48,12 @@ func (l *List) GetAllItens() (*List, error) {
 
 		toDo_list.Items = append(toDo_list.Items, *toDo_item)
 	}
-
-	defer db.Close()
 	return toDo_list, nil
 }
 
 func (l *List) InsertItem(s string) error {
 	db := database.Connect()
+	defer db.Close()
 
 	insert_sql := "INSERT INTO to_do_list(ListId, Item, Done) VALUES ($1, $2, $3)"
 
@@ -71,13 +71,12 @@ func (l *List) InsertItem(s string) error {
 
 	queryset.Exec(item.ListId, item.Item, item.Done)
 	log.Println("Task added to ToDo List.")
-
-	defer db.Close()
 	return nil
 }
 
 func (l *List) RemoveItem(s string) error {
 	db := database.Connect()
+	defer db.Close()
 
 	sql_delete := "DELETE FROM to_do_list WHERE ListId=$1 and Item=$2"
 	queryset, err := db.Prepare(sql_delete)
@@ -87,13 +86,12 @@ func (l *List) RemoveItem(s string) error {
 	}
 
 	queryset.Exec(l.Id, s)
-
-	defer db.Close()
 	return nil
 }
 
 func (l *List) RemoveAllDoneItem() error {
 	db := database.Connect()
+	defer db.Close()
 
 	delete_all_sql := "DELETE FROM to_do_list WHERE ListId=$1 and Done=$2"
 
@@ -104,14 +102,16 @@ func (l *List) RemoveAllDoneItem() error {
 	}
 
 	queryset.Exec(l.Id, true)
-
-	defer db.Close()
 	return nil
 }
 
-func (l *List) UpdateItemDone(s string) error {
+func (l *List) UpdateItemDone(item Item) error {
 	db := database.Connect()
+	defer db.Close()
 
+	if item.Done == true {
+		return errors.New("Task already done.")
+	}
 	sql_update := "UPDATE to_do_list SET Done=$1 WHERE ListId=$2"
 
 	queryset, err := db.Prepare(sql_update)
@@ -120,31 +120,26 @@ func (l *List) UpdateItemDone(s string) error {
 		return err
 	}
 
-	
-
-	for _, item := range l.Items {
-		if item.Item == s && done == false {
-			item.Done = true
-			log.Println("Item setted to Done successfully")
-			return nil
-		}
-	}
-
-	defer db.Close()
-	return errors.New("Task already done.")
+	queryset.Exec(item.Done, l.Id)
+	return nil
 }
 
-func (l *List) UpdateItemTask(s string, done bool) error {
+func (l *List) UpdateItemTask(item Item, s string) error {
 	db := database.Connect()
+	defer db.Close()
 
-	for _, item := range l.Items {
-		if item.Item == s && done == false {
-			item.Done = true
-			log.Println("Item setted to Done successfully")
-			return nil
+	for _, item := range l.Items{
+		if item.Item == s {
+			return errors.New("Task already Created.")
 		}
 	}
 
-	defer db.Close()
-	return errors.New("Task already done.")
+	sql_update := "UPDATE to_do_list SET Item=$1 WHERE ListId=$2"
+	queryset, err := db.Prepare(sql_update)
+	if err != nil {
+		log.Println("Query error: ", err)
+		return err
+	}
+	queryset.Exec(item.Item, l.Id)
+	return nil
 }
