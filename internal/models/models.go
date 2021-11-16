@@ -14,7 +14,7 @@ type List struct {
 
 type Item struct {
 	ListId int64
-	Item   string
+	Task   string
 	Done   bool
 }
 
@@ -43,7 +43,7 @@ func (l *List) GetAllItens() (*List, error) {
 			return nil, err
 		}
 
-		toDo_item.Item = item
+		toDo_item.Task = item
 		toDo_item.Done = done
 
 		toDo_list.Items = append(toDo_list.Items, *toDo_item)
@@ -59,7 +59,7 @@ func (l *List) InsertItem(s string) error {
 
 	item := Item{
 		ListId: l.Id,
-		Item: s,
+		Task: s,
 		Done: false,
 	}
 
@@ -69,7 +69,7 @@ func (l *List) InsertItem(s string) error {
 		return err
 	}
 
-	queryset.Exec(item.ListId, item.Item, item.Done)
+	queryset.Exec(item.ListId, item.Task, item.Done)
 	log.Println("Task added to ToDo List.")
 	return nil
 }
@@ -129,8 +129,8 @@ func (l *List) UpdateItemTask(item Item, s string) error {
 	defer db.Close()
 
 	for _, item := range l.Items{
-		if item.Item == s {
-			return errors.New("Task already Created.")
+		if item.Task == s {
+			return errors.New("Task already Created")
 		}
 	}
 
@@ -140,6 +140,6 @@ func (l *List) UpdateItemTask(item Item, s string) error {
 		log.Println("Query error: ", err)
 		return err
 	}
-	queryset.Exec(item.Item, l.Id)
+	queryset.Exec(item.Task, l.Id)
 	return nil
 }
