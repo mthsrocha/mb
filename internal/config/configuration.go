@@ -37,15 +37,4 @@ func setDefaults() {
 func InitConfig() {
 	setDefaults()
 	viper.AutomaticEnv()
-
-	viper.BindEnv("Enviromnent", "ENV_NAME")
-	viper.BindEnv("Host", "HOST")
-	viper.BindEnv("Port", "PORT")
-	viper.BindEnv("LogLevel", "LOG_LEVEL")
-	viper.BindEnv("readTimeout", "READ_TIMEOUT")
-	viper.BindEnv("writeTimeout", "WRITE_TIMEOUT")
-
-	viper.BindEnv("Database.Driver", "DATABASE_DRIVER")
-	viper.BindEnv("Database.Host", "DATABASE_HOST")
-
 }
